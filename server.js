@@ -66,7 +66,7 @@ app.post("/login", (req, res) => {
 
   // Store in session
   req.session.username = username;
-req.session.crmid = crmid; // ✅ updated to crmid
+  req.session.crmid = crmid; // ✅ updated to crmid
 
   console.log("User logged in:", username, "CRM ID:", crmid);
 

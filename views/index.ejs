@@ -1,21 +1,337 @@
 <%- include('layout', { title: "Home", body: "" }) %>
 
-<%- include('partials/carousel') %>
+<style>
+  .hero-carousel {
+    border-radius: 36px;
+    overflow: hidden;
+    margin-bottom: 3.5rem;
+    background: #060b27;
+    box-shadow: 0 35px 65px rgba(6, 11, 39, 0.35);
+  }
+  .hero-carousel .carousel-inner {
+    border-radius: 36px;
+  }
+  .hero-slide {
+    min-height: clamp(420px, 55vh, 520px);
+    padding: clamp(2.5rem, 5vw, 4.5rem);
+    color: #fff;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .hero-slide::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 75% 20%, rgba(255, 255, 255, 0.18), transparent 55%);
+    opacity: 0.9;
+  }
+  .hero-slide .hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+  .opacity-85 {
+    opacity: 0.85;
+  }
+  .hero-carousel .carousel-indicators [data-bs-target] {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+  .hero-carousel .carousel-indicators .active {
+    background-color: #fff;
+  }
+  .hero-carousel .carousel-control-prev-icon,
+  .hero-carousel .carousel-control-next-icon {
+    filter: invert(1);
+  }
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.18);
+    margin-bottom: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .hero-pill .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+  .hero-stat {
+    min-width: 140px;
+  }
+  .hero-stat h3 {
+    font-size: 2.1rem;
+    margin-bottom: 0.3rem;
+  }
+  .hero-actions .btn-gradient {
+    background: linear-gradient(120deg, #f54a48, #ff8a3d);
+    border: none;
+    color: #fff;
+    padding: 0.85rem 1.75rem;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .hero-actions .btn-outline-light {
+    border-radius: 999px;
+    padding-inline: 1.5rem;
+  }
+  .slide-one {
+    background: linear-gradient(135deg, rgba(6, 11, 39, 0.9), rgba(17, 29, 85, 0.85)),
+      url("https://images.unsplash.com/photo-1483721310020-03333e577078?auto=format&fit=crop&w=1400&q=80") center/cover no-repeat;
+  }
+  .slide-two {
+    background: linear-gradient(135deg, rgba(6, 11, 39, 0.7), rgba(245, 74, 72, 0.8)),
+      url("https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1400&q=80") center/cover no-repeat;
+  }
+  .slide-three {
+    background: linear-gradient(135deg, rgba(6, 11, 39, 0.85), rgba(12, 77, 162, 0.8)),
+      url("https://images.unsplash.com/photo-1485395037613-e869eada3ba8?auto=format&fit=crop&w=1400&q=80") center/cover no-repeat;
+  }
+  .product-section {
+    margin-bottom: 4rem;
+  }
+  .product-grid {
+    margin-top: 2rem;
+  }
+  .product-card {
+    border: 1px solid rgba(6, 11, 39, 0.12);
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 25px 45px rgba(6, 11, 39, 0.08);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 30px 55px rgba(6, 11, 39, 0.12);
+  }
+  .product-card .img-wrapper {
+    border-radius: 18px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 138, 61, 0.1));
+    margin-bottom: 1.25rem;
+  }
+  .product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+  }
+  .price-chip {
+    background: rgba(6, 11, 39, 0.08);
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    font-weight: 600;
+  }
+  .product-card .btn-gradient {
+    background: linear-gradient(120deg, #f54a48, #ff8a3d);
+    border: none;
+    color: #fff;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .product-card .btn-gradient:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(245, 74, 72, 0.3);
+  }
+  .section-subtitle {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6c7691;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+  }
+  @media (max-width: 767px) {
+    .hero-stats {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .product-card img {
+      height: 180px;
+    }
+  }
+</style>
 
-<h2 class="mb-3">🔥 Featured Products</h2>
-
-<div class="row">
-  <% products.forEach(product => { %>
-    <div class="col-md-3 mb-4">
-      <div class="card product-card">
-        <img src="<%= product.image %>" class="card-img-top" alt="">
-        <div class="card-body">
-          <h5 class="card-title"><%= product.name %></h5>
-          <p class="card-text">$<%= product.price %></p>
-          <a href="/product/<%= product._id %>" class="btn btn-primary">View</a>
+<section class="hero-carousel-wrapper">
+  <div id="heroShowcase" class="carousel slide hero-carousel" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#heroShowcase" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#heroShowcase" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#heroShowcase" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="hero-slide slide-one">
+          <div class="hero-content">
+            <div class="hero-pill">
+              <span class="dot"></span>
+              Sportwear Lab Exclusive
+            </div>
+            <div class="row align-items-center">
+              <div class="col-lg-6">
+                <h1 class="display-5 fw-semibold mb-3">Gear engineered for city heat + high tempo sessions.</h1>
+                <p class="lead mb-4 opacity-85">
+                  Discover the kits our members are using to crush Bangkok marathons, rooftop HIIT, and studio strength classes.
+                  Built with breathable tech fabrics and obsessive fit testing.
+                </p>
+                <div class="hero-actions d-flex flex-wrap gap-3">
+                  <a href="/login" class="btn btn-gradient">Access Member Hub</a>
+                  <a href="/products" class="btn btn-outline-light">Shop collections</a>
+                </div>
+              </div>
+              <div class="col-lg-6 mt-4 mt-lg-0">
+                <div class="hero-stats">
+                  <div class="hero-stat">
+                    <h3 class="fw-bold mb-0">48 hr</h3>
+                    <p class="small text-white-50 mb-0">Priority delivery in Bangkok</p>
+                  </div>
+                  <div class="hero-stat">
+                    <h3 class="fw-bold mb-0">30 day</h3>
+                    <p class="small text-white-50 mb-0">Wear test guarantee</p>
+                  </div>
+                  <div class="hero-stat">
+                    <h3 class="fw-bold mb-0">4.8 ★</h3>
+                    <p class="small text-white-50 mb-0">Average member rating</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="hero-slide slide-two">
+          <div class="hero-content">
+            <div class="hero-pill">
+              <span class="dot"></span>
+              Bangkok Night Run
+            </div>
+            <div class="row align-items-center">
+              <div class="col-lg-6">
+                <h1 class="display-5 fw-semibold mb-3">Luminous reflective layers for after-dark routes.</h1>
+                <p class="lead mb-4 opacity-85">
+                  Lightweight shells with 360º visibility and moisture control so you can chase mile splits when the city cools down.
+                </p>
+                <div class="hero-actions d-flex flex-wrap gap-3">
+                  <a href="/products" class="btn btn-gradient">Shop Night Kits</a>
+                  <a href="/login" class="btn btn-outline-light">Member perks</a>
+                </div>
+              </div>
+              <div class="col-lg-6 mt-4 mt-lg-0">
+                <div class="hero-stats">
+                  <div class="hero-stat">
+                    <h3 class="fw-bold mb-0">12 km</h3>
+                    <p class="small text-white-50 mb-0">Average run club session</p>
+                  </div>
+                  <div class="hero-stat">
+                    <h3 class="fw-bold mb-0">3 hrs</h3>
+                    <p class="small text-white-50 mb-0">Cold-pack insulation</p>
+                  </div>
+                  <div class="hero-stat">
+                    <h3 class="fw-bold mb-0">96%</h3>
+                    <p class="small text-white-50 mb-0">Member satisfaction</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="hero-slide slide-three">
+          <div class="hero-content">
+            <div class="hero-pill">
+              <span class="dot"></span>
+              Studio Strength
+            </div>
+            <div class="row align-items-center">
+              <div class="col-lg-6">
+                <h1 class="display-5 fw-semibold mb-3">Compression and grip for barbell + circuit days.</h1>
+                <p class="lead mb-4 opacity-85">
+                  Built with anti-slip panels and breathable mesh zones to stay locked in when the training volume spikes.
+                </p>
+                <div class="hero-actions d-flex flex-wrap gap-3">
+                  <a href="/products" class="btn btn-gradient">Explore strength edits</a>
+                  <a href="/login" class="btn btn-outline-light">Book a fitting</a>
+                </div>
+              </div>
+              <div class="col-lg-6 mt-4 mt-lg-0">
+                <div class="hero-stats">
+                  <div class="hero-stat">
+                    <h3 class="fw-bold mb-0">5 pcs</h3>
+                    <p class="small text-white-50 mb-0">Custom bundle builder</p>
+                  </div>
+                  <div class="hero-stat">
+                    <h3 class="fw-bold mb-0">-2°</h3>
+                    <p class="small text-white-50 mb-0">Cooling mesh delta</p>
+                  </div>
+                  <div class="hero-stat">
+                    <h3 class="fw-bold mb-0">Elite</h3>
+                    <p class="small text-white-50 mb-0">Coaches approved</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  <% }) %>
-</div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroShowcase" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroShowcase" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>
 
+<section class="product-section">
+  <div class="d-flex flex-wrap align-items-end justify-content-between gap-3">
+    <div>
+      <p class="section-subtitle mb-1">Featured Products</p>
+      <h2 class="fw-bold mb-0">Athlete favorites dropping this week</h2>
+    </div>
+    <a href="/products" class="text-decoration-none fw-semibold text-primary">View full catalog →</a>
+  </div>
+
+  <div class="row product-grid g-4">
+    <% products.forEach(product => { %>
+      <div class="col-xl-3 col-lg-4 col-sm-6">
+        <div class="product-card">
+          <div class="img-wrapper">
+            <img src="<%= product.image %>" alt="<%= product.name %> image">
+          </div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h5 class="fw-semibold mb-0"><%= product.name %></h5>
+            <span class="price-chip">$<%= product.price.toFixed(2) %></span>
+          </div>
+          <p class="text-muted small flex-grow-1 mb-4"><%= product.description %></p>
+          <a href="/product/<%= product._id %>" class="btn btn-gradient w-100">View details</a>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</section>
