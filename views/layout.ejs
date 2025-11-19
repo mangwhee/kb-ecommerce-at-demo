@@ -8,7 +8,11 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
   <style>
     body,
     .navbar,
@@ -27,7 +31,28 @@
   </style>
 
   <!-- ========================================================= -->
-  <!--        ADOBE EXPERIENCE CLOUD ID (ECID) SERVICE           -->
+  <!--     1. TARGET PAGE PARAMS (MUST LOAD BEFORE at.js)         -->
+  <!-- ========================================================= -->
+  <% if (crmid) { %>
+  <script>
+    window.targetPageParams = function () {
+      console.log("Target thirdPartyId set:", "<%= crmid %>");
+
+      return {
+        id: {
+          thirdPartyId: "<%= crmid %>"
+        },
+        profile: {
+          age: 32,
+          country: "Thailand"
+        }
+      };
+    };
+  </script>
+  <% } %>
+
+  <!-- ========================================================= -->
+  <!--     2. ECID SERVICE (Visitor API)                         -->
   <!-- ========================================================= -->
   <script src="/js/visitorAPI.js"></script>
 
@@ -38,15 +63,6 @@
     });
   </script>
 
-  <!-- ========================================================= -->
-  <!--                  ADOBE TARGET 2.x (at.js)                 -->
-  <!-- ========================================================= -->
-  <script src="/js/at.js"></script>
-
-  <!-- ========================================================= -->
-  <!--         CUSTOMER ID STITCHING (AUTH / LOGGED OUT)         -->
-  <!-- ========================================================= -->
-
   <% if (crmid) { %>
   <!-- AUTHENTICATED USER -->
   <script>
@@ -56,6 +72,7 @@
         authState: Visitor.AuthState.AUTHENTICATED
       }
     });
+
     console.log("ECID Set: AUTHENTICATED → CRMID =", "<%= crmid %>");
   </script>
 
@@ -68,37 +85,15 @@
         authState: Visitor.AuthState.LOGGED_OUT
       }
     });
+
     console.log("ECID Set: LOGGED_OUT → CRMID =", "<%= crmid %>");
   </script>
   <% } %>
 
-<!-- ======================= -->
-<!-- Adobe Target at.js 2.x -->
-<!-- Set thirdPartyId for Target Profile Store -->
-<!-- ======================= -->
-<% if (crmid) { %>
-<script>
-  adobe.target.triggerView("home-page", {
-    profile: {
-      thirdPartyId: "<%= crmid %>",
-      age: 32,
-      country: "Thailand"
-    }
-  });
-  console.log("Target thirdPartyId set:", "<%= crmid %>");
-</script>
-<% } else { %>
-<script>
-  adobe.target.triggerView("home-page");
-</script>
-<% } %>
-
-
-
-
-
-
-
+  <!-- ========================================================= -->
+  <!--     3. ADOBE TARGET 2.x (at.js) – MUST LOAD LAST          -->
+  <!-- ========================================================= -->
+  <script src="/js/at.js"></script>
 
 </head>
 
