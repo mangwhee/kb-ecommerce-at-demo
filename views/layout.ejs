@@ -61,6 +61,10 @@
       trackingServer: "",
       trackingServerSecure: ""
     });
+
+    visitor.getMarketingCloudVisitorID(function (ecid) {
+      console.log("ECID (Experience Cloud ID):", ecid || "Not available");
+    });
   </script>
 
   <% if (crmid) { %>
